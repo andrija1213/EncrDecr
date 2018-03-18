@@ -6,29 +6,27 @@ std::ifstream::pos_type filesize(std::string filename);
 
 int main(int argc,char* argv[]) 
 {
-    if(argc==4)
+    if(argc==4) //if right amout of arguments are passed
     {
 	std::string key,src,dst;
-	key=argv[1];
-	src=argv[2];
-	dst=argv[3];
-	std::string temp=key;
-	std::ifstream file(src);
-	std::ofstream file2(dst, std::ios::out | std::ios::trunc);
-	while(key.length()<filesize(src))
+	key=argv[1]; //first command line argument is key
+	src=argv[2]; //second one is source file
+	dst=argv[3]; //third one is destination
+	std::string temp=key; //copy of key to add onto key
+	std::ifstream file(src); //open source file in reading mode
+	std::ofstream file2(dst, std::ios::out | std::ios::trunc); //open destination file in writing mode, this creates new file if it doesn't exist
+	while(key.length()<filesize(src)) //while key is less than size of the file, add key on itself until it reaches size of the file
 	{
 	    key.append(temp);
 	}
-	char buffer[int(filesize(src))];
-	char* pt_buffer=buffer;
-	while(file.read(pt_buffer,int(filesize(src))))
+	char buffer[int(filesize(src))]; //string to store the content of the file
+	char* pt_buffer=buffer; //pointer to buffer
+	file.read(pt_buffer,int(filesize(src))); //read file content into the string buffer
+	for(size_t i=0;i<sizeof(buffer)/sizeof(char);i++) //iterate over each character and write xor result into the destination file
 	{
-	    for(size_t i=0;i<sizeof(buffer)/sizeof(char);i++)
-	    {
-		    file2<<(char)(buffer[i]^key[i]);
-	    }
+	    file2<<(char)(buffer[i]^key[i]); //part that writes
 	}
-	file.close();
+	file.close(); //close both files
 	file2.close();
 	std::cout<<"Done"<<std::endl;
     }
@@ -39,8 +37,8 @@ int main(int argc,char* argv[])
     return 0;
 }
 
-std::ifstream::pos_type filesize(std::string filename)
+std::ifstream::pos_type filesize(std::string filename) //function to get the filesize
 {
-    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
-    return in.tellg();
+    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary); //opens the file in reading mode and places the pointer at the end of it
+    return in.tellg(); //returns pointer place in the file
 }
