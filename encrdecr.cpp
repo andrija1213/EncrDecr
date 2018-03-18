@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <locale>
 #include <string>
 
 std::ifstream::pos_type filesize(std::string filename);
