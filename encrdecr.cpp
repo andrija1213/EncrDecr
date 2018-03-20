@@ -6,6 +6,7 @@ std::ifstream::pos_type filesize(std::string filename);
 
 int main(int argc,char* argv[]) 
 {
+    std::cout<<"Args given: "<<argc<<std::endl;
     if(argc==4) //if right amout of arguments are passed
     {
 	std::string key,src,dst;
@@ -15,16 +16,19 @@ int main(int argc,char* argv[])
 	std::string temp=key; //copy of key to add onto key
 	std::ifstream file(src); //open source file in reading mode
 	std::ofstream file2(dst, std::ios::out | std::ios::trunc); //open destination file in writing mode, this creates new file if it doesn't exist
-	while(key.length()<filesize(src)) //while key is less than size of the file, add key on itself until it reaches size of the file
+	while(key.length()<filesize(src) && key.length()<=200) //while key is less than size of the file, add key on itself until it reaches size of the file
 	{
 	    key.append(temp);
 	}
-	char buffer[int(filesize(src))]; //string to store the content of the file
+	char buffer[key.length()]; //string to store the content of the file
 	char* pt_buffer=buffer; //pointer to buffer
-	file.read(pt_buffer,int(filesize(src))); //read file content into the string buffer
-	for(size_t i=0;i<sizeof(buffer)/sizeof(char);i++) //iterate over each character and write xor result into the destination file
+	for(size_t i=0;i<int(filesize(src));i+=key.length())
 	{
-	    file2<<(char)(buffer[i]^key[i]); //part that writes
+	    file.read(pt_buffer,key.length()); //read file content into the string buffer
+	    for(size_t i=0;i<sizeof(buffer)/sizeof(char);i++) //iterate over each character and write xor result into the destination file
+	    {
+		file2<<(char)(buffer[i]^key[i]); //part that writes
+	    }
 	}
 	file.close(); //close both files
 	file2.close();
